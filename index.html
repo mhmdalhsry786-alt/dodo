@@ -2,16 +2,23 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>دودو ستريم</title>
 <style>body{font-family:system-ui;background:#0f172a;color:#e2e8f0;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center}h1{font-size:28px}</style>
-</head><body><div><h1>🎬 دودو ستريم</h1><p id="msg">جارٍ الاتصال بالسيرفر...</p></div>
+</head><body><div><h1>&#127916; دودو ستريم</h1><p id="msg">جارٍ الاتصال بالسيرفر...</p></div>
 <script>
-const TOPIC='dodo-f11c4d4c';
+var TOPIC='dodo-f11c4d4c';
 fetch('https://ntfy.sh/'+TOPIC+'/json?poll=1')
-  .then(r=>r.json())
-  .then(msgs=>{
-    const links=msgs.map(m=>(m.message||'').match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/i)).filter(Boolean);
-    const last=links.length?links[links.length-1][0]:null;
-    if(last){ location.replace(last+'/?invite=DODO2026'); }
-    else{ document.getElementById('msg').textContent='اللابتوب مطفي حاليًا 🔌 — شغّله وانتظر دقيقة ثم حدّث الصفحة'; }
+  .then(function(r){return r.text();})
+  .then(function(txt){
+    var lines = txt.trim().split(/\n+/);
+    var last = null;
+    for (var i=0;i<lines.length;i++){
+      try{
+        var m = JSON.parse(lines[i]);
+        var mm = (m.message||'').match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/i);
+        if (mm) last = mm[0];
+      }catch(e){}
+    }
+    if (last){ location.replace(last + '/?invite=DODO2026'); }
+    else{ document.getElementById('msg').textContent='اللابتوب مطفي حاليًا &#128726; — شغّله وانتظر دقيقة ثم حدّث الصفحة'; }
   })
-  .catch(()=>{ document.getElementById('msg').textContent='تعذر الوصول — تحقق من الإنترنت وحدّث الصفحة'; });
+  .catch(function(){ document.getElementById('msg').textContent='تعذر الوصول — تحقق من الإنترنت وحدّث الصفحة'; });
 </script></body></html>
