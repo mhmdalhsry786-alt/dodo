@@ -78,7 +78,7 @@ select{background:#1e293b;border:1px solid #334155;color:#e2e8f0;border-radius:8
   <header>
     <h1>🎬 دودو ستريم</h1>
     <span class="badge" id="mode">وضع سحابي ⛅</span>
-    <button id="rescan" onclick="location.reload()">فحص اللابتوب</button>
+    <button id="rescan" onclick="openHome()">🏠 المنزلي</button>
   </header>
   <div id="searchbar">
     <input id="q" placeholder="ابحث عن فيلم أو مسلسل..." onkeydown="if(event.key==='Enter')doSearch()">
@@ -117,8 +117,9 @@ function boot(){
       try{var m=JSON.parse(lines[i]);var mm=(m.message||'').match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/i);if(mm)tunnel=mm[0];}catch(e){}
     }
     if(!tunnel)throw 0;
+    window._tunnel=tunnel;
     document.getElementById('ckmsg').textContent='السيرفر يعمل — جارٍ الدخول لتجربة دودو الكاملة...';
-    return get(tunnel+'/?invite='+INVITE,7000).then(function(){location.replace(tunnel+'/?invite='+INVITE);})
+    return get(tunnel+'/?invite='+INVITE,10000).then(function(){location.replace(tunnel+'/?invite='+INVITE);})
       .catch(function(){throw 0;});
   }).catch(function(){
     document.getElementById('ckmsg').textContent='اللابتوب مطفي — التحول للوضع السحابي...';
@@ -187,14 +188,25 @@ function renderEps(){
 }
 function backSearch(){document.getElementById('detail').hidden=true;document.getElementById('results').hidden=false;}
 
+function openHome(){
+  var t=window._tunnel;
+  if(t){location.replace(t+'/?invite='+INVITE);}
+  else{location.reload();}
+}
+
 /* ===== المصادر ===== */
 function score(s){
   var t=(s.name||'')+' '+(s.title||'');var sc=0;
-  if(/1080p/i.test(t))sc+=30;else if(/720p/i.test(t))sc+=25;else if(/2160|4k/i.test(t))sc+=4;else if(/480/i.test(t))sc+=10;
-  if(/x264|h\.?264|avc/i.test(t))sc+=20;
+  if(/1080p/i.test(t))sc+=28;else if(/720p/i.test(t))sc+=26;else if(/2160|4k/i.test(t))sc-=6;else if(/480/i.test(t))sc+=18;
+  if(/x264|h\.?264|avc/i.test(t))sc+=18;
   if(/x265|h\.?265|hevc/i.test(t))sc-=15;
   var m=(s.title||'').match(/\ud83d\udc64\s*(\d+)/)||0;
-  if(m)sc+=Math.min(25,parseInt(m[1])/8);
+  if(m)sc+=Math.min(40,parseInt(m[1])/5);
+  var sm=(s.title||'').match(/([\d.]+)\s*(GB|MB)/i);
+  if(sm){
+    var mb=sm[2].toUpperCase()==='GB'?parseFloat(sm[1])*1024:parseFloat(sm[1]);
+    if(mb<=900)sc+=24;else if(mb<=2600)sc+=18;else if(mb<=5200)sc+=2;else sc-=20;
+  }
   return sc;
 }
 function loadStreams(type,vid){
@@ -205,12 +217,18 @@ function loadStreams(type,vid){
     var st=(d.streams||[]).slice().sort(function(a,b){return score(b)-score(a)});
     var el=document.getElementById('streams');
     if(!st.length){el.innerHTML='<div class="empty">لا توجد مصادر لهذا العنوان</div>';return;}
-    var h='<div style="font-size:13px;color:#38bdf8;margin-bottom:8px">روابط المشاهدة ('+st.length+') — مرتبة حسب الأفضل لجودتك</div>';
+    var bt=(st[0].title||'').match(/([\d.]+)\s*(GB|MB)/i);
+    var h='<button class="btn" onclick="playModal(0)">⚡ شغّل أسرع مصدر تلقائيًا'+(bt?'  📦 '+bt[1]+bt[2]:'')+'</button><div style="height:10px"></div>'+
+      '<div style="font-size:13px;color:#38bdf8;margin-bottom:8px">روابط المشاهدة ('+st.length+') — مرتبة حسب سرعة التشغيل (مشاركون + حجم مناسب)</div>';
     st.slice(0,25).forEach(function(s,i){
+      var t=(s.title||'');
+      var sm=t.match(/([\d.]+)\s*(GB|MB)/i);var sd=t.match(/\ud83d\udc64\s*(\d+)/);
+      var badge=(sd?'👤 '+sd[1]:'')+(sm?'  📦 '+sm[1]+sm[2]:'');
       h+='<div class="stream" onclick="playModal('+i+')">'+
         '<span class="nm">'+(s.name||'Torrentio').replace(/\n/g,' ')+'</span>'+
         '<span class="qb">'+((s.name||'').split('\n')[1]||'')+'</span>'+
-        '<div class="ttl">'+(s.title||'')+'</div></div>';
+        (badge?'<span class="qb" style="background:#3f2d0e;color:#fbbf24">'+badge+'</span>':'')+
+        '<div class="ttl">'+t+'</div></div>';
     });
     el.innerHTML=h;
     window._st=st;
@@ -234,7 +252,7 @@ function playModal(i){
     '<a class="btn g" target="_blank" href="https://playtor.online/t/'+s.infoHash+'">☁️ المشغّل السحابي PLAYTOR (بديل)</a>'+
     '<button class="btn g" onclick="copyMag(\''+mag.replace(/'/g,"\\'")+'\')">📋 نسخ رابط الماغنت</button>'+
     '<button class="btn g" onclick="document.getElementById(\'pm\').remove()">إلغاء</button>'+
-    '<div class="note">المشغّل السحابي يسحب التورنت من السحابة ويبثه لجهازك HTTPS — انتظر ثوانٍ حتى يتوفر seeders كافٍ</div>'+
+    '<div class="note">خطوات المشغّل السحابي:<br>① سيفتح WebTor ويجهّز الملف — الانتظار 30-90 ثانية طبيعي حسب 👤 و📦<br>② اضغط زر التشغيل ▶ داخل صفحة WebTor<br>③ تأخر أكثر من دقيقتين؟ ارجع واختر مصدرًا 👤 أكثر و📦 أصغر<br>④ للأسرع دائمًا: زر «🏠 المنزلي» بالأعلى (السيرفر المنزلي)</div>'+
     '</div></div>';
   var old=document.getElementById('pm');if(old)old.remove();
   document.body.insertAdjacentHTML('beforeend',html);
