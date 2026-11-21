@@ -1,24 +1,251 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="دودو ستريم">
 <title>دودو ستريم</title>
-<style>body{font-family:system-ui;background:#0f172a;color:#e2e8f0;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center}h1{font-size:28px}</style>
-</head><body><div><h1>&#127916; دودو ستريم</h1><p id="msg">جارٍ الاتصال بالسيرفر...</p></div>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,"Segoe UI",Tahoma;background:#0f172a;color:#e2e8f0;margin:0;min-height:100vh}
+a{color:#38bdf8}
+header{position:sticky;top:0;z-index:5;background:#1e293bee;backdrop-filter:blur(8px);padding:12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #334155}
+header h1{font-size:17px;color:#38bdf8;margin:0;flex:1}
+.badge{font-size:11px;background:#14532d;color:#4ade80;padding:4px 10px;border-radius:99px}
+#rescan{font-size:12px;background:#334155;color:#e2e8f0;border:0;border-radius:8px;padding:7px 12px;cursor:pointer}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;padding:20px}
+.spin{width:34px;height:34px;border:3px solid #334155;border-top-color:#38bdf8;border-radius:50%;animation:sp 0.9s linear infinite;margin-bottom:14px}
+@keyframes sp{to{transform:rotate(360deg)}}
+#searchbar{display:flex;gap:8px;padding:12px 14px;position:sticky;top:53px;background:#0f172a;z-index:4}
+#q{flex:1;background:#1e293b;border:1px solid #334155;color:#e2e8f0;border-radius:10px;padding:12px 14px;font-size:15px;font-family:inherit}
+#q:focus{outline:none;border-color:#38bdf8}
+#searchbar button{background:#2563eb;color:#fff;border:0;border-radius:10px;padding:0 20px;font-size:15px;font-family:inherit;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:12px;padding:6px 14px 20px}
+.card{cursor:pointer;border-radius:10px;overflow:hidden;background:#1e293b;transition:transform .15s}
+.card:active{transform:scale(.96)}
+.card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block}
+.card .t{font-size:11.5px;padding:6px 7px;line-height:1.5;min-height:34px}
+.card .y{color:#94a3b8;font-size:10px}
+#detail{padding:14px}
+.bgimg{position:fixed;inset:0;background-size:cover;background-position:center;opacity:.16;filter:blur(2px);pointer-events:none}
+.back{background:#334155;color:#fff;border:0;border-radius:8px;padding:8px 14px;font-size:13px;font-family:inherit;cursor:pointer;margin-bottom:12px;position:relative;z-index:2}
+.meta{display:flex;gap:14px;position:relative;z-index:2}
+.meta img{width:120px;border-radius:10px;flex-shrink:0}
+.meta h2{margin:0 0 4px;font-size:19px}
+.meta .desc{font-size:13px;color:#cbd5e1;line-height:1.8;margin-top:8px;max-height:120px;overflow:auto}
+select{background:#1e293b;border:1px solid #334155;color:#e2e8f0;border-radius:8px;padding:9px 12px;font-size:14px;font-family:inherit;margin:12px 8px 4px 0}
+.eplist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px;position:relative;z-index:2}
+.ep{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:10px;font-size:12.5px;cursor:pointer;line-height:1.6}
+.ep:hover{border-color:#38bdf8}
+#streams{margin-top:14px;position:relative;z-index:2}
+.stream{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:11px 13px;margin-bottom:8px;cursor:pointer}
+.stream:hover{border-color:#2563eb}
+.stream .nm{font-size:13px;font-weight:bold;color:#38bdf8}
+.stream .ttl{font-size:11.5px;color:#94a3b8;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:ltr;text-align:right}
+.qb{display:inline-block;font-size:10px;background:#164e63;color:#67e8f9;border-radius:6px;padding:2px 8px;margin-left:6px}
+.modal{position:fixed;inset:0;background:#0b1220ee;z-index:20;display:flex;align-items:center;justify-content:center;padding:20px}
+.mbox{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:22px;width:100%;max-width:400px}
+.mbox h3{margin:0 0 10px;font-size:16px}
+.btn{display:block;width:100%;background:#2563eb;color:#fff;border:0;border-radius:10px;padding:13px;font-size:14px;font-family:inherit;cursor:pointer;margin-top:9px;text-decoration:none;text-align:center}
+.btn.g{background:#475569}
+.note{font-size:11.5px;color:#94a3b8;line-height:1.9;margin-top:14px;text-align:center}
+#gate input{width:100%;background:#0f172a;border:1px solid #334155;color:#e2e8f0;border-radius:10px;padding:13px;font-size:16px;text-align:center;font-family:inherit}
+.err{color:#fb7185;font-size:13px;margin-top:10px;min-height:18px}
+.empty{padding:40px 20px;text-align:center;color:#94a3b8}
+</style>
+</head>
+<body>
+
+<div id="gate" class="modal" hidden>
+ <div class="mbox" style="text-align:center">
+  <h3>🎬 دودو ستريم</h3>
+  <p style="font-size:13px;color:#94a3b8">منصة خاصة — أدخل رمز الدعوة</p>
+  <input id="code" type="password" placeholder="رمز الدعوة..." autocomplete="off">
+  <div class="err" id="gerr"></div>
+  <button class="btn" onclick="tryGate()">دخول</button>
+ </div>
+</div>
+
+<div id="checking" class="center">
+  <div class="spin"></div>
+  <div id="ckmsg" style="font-size:14px;color:#94a3b8">جارٍ فحص السيرفر...</div>
+</div>
+
+<div id="app" hidden>
+  <header>
+    <h1>🎬 دودو ستريم</h1>
+    <span class="badge" id="mode">وضع سحابي ⛅</span>
+    <button id="rescan" onclick="location.reload()">فحص اللابتوب</button>
+  </header>
+  <div id="searchbar">
+    <input id="q" placeholder="ابحث عن فيلم أو مسلسل..." onkeydown="if(event.key==='Enter')doSearch()">
+    <button onclick="doSearch()">بحث</button>
+  </div>
+  <div id="results"></div>
+  <div id="detail" hidden></div>
+  <div class="note">ودودو لايت — النسخة السحابية تعمل بدون لابتوب عبر المشغّلات السحابية<br>التجربة الكاملة (الكرتون المدبلج + الترجمة العربية + الجودة المثلى) عند تشغيل اللابتوب</div>
+</div>
+
 <script>
-var TOPIC='dodo-f11c4d4c';
-fetch('https://ntfy.sh/'+TOPIC+'/json?poll=1')
-  .then(function(r){return r.text();})
-  .then(function(txt){
-    var lines = txt.trim().split(/\n+/);
-    var last = null;
-    for (var i=0;i<lines.length;i++){
-      try{
-        var m = JSON.parse(lines[i]);
-        var mm = (m.message||'').match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/i);
-        if (mm) last = mm[0];
-      }catch(e){}
+var TOPIC='dodo-f11c4d4c', INVITE='DODO2026';
+var CIN='https://v3-cinemeta.strem.io', TOR='https://torrentio.strem.fun';
+var DEFTR=['udp://tracker.opentrackr.org:1337/announce','udp://open.tracker.cl:1337/announce','udp://tracker.openbittorrent.com:6969/announce','udp://exodus.desync.com:6969/announce'];
+
+function get(u,ms){
+  var c=new AbortController(); var t=setTimeout(function(){c.abort()},ms||12000);
+  return fetch(u,{signal:c.signal}).then(function(r){clearTimeout(t);return r;});
+}
+function jget(u,ms){return get(u,ms).then(function(r){return r.json()});}
+
+/* ===== بوابة الدعوة ===== */
+function tryGate(){
+  var v=document.getElementById('code').value.trim();
+  if(v===INVITE){localStorage.setItem('dodo_ok','1');document.getElementById('gate').hidden=true;boot();}
+  else{document.getElementById('gerr').textContent='رمز غير صحيح';}
+}
+
+/* ===== الفحص الذكي: لابتوب ثم سحابي ===== */
+function boot(){
+  if(localStorage.getItem('dodo_ok')!=='1'){document.getElementById('gate').hidden=false;return;}
+  var tunnel='';
+  get('https://ntfy.sh/'+TOPIC+'/json?poll=1',8000).then(function(r){return r.text()}).then(function(txt){
+    var lines=txt.trim().split(/\n+/);
+    for(var i=0;i<lines.length;i++){
+      try{var m=JSON.parse(lines[i]);var mm=(m.message||'').match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/i);if(mm)tunnel=mm[0];}catch(e){}
     }
-    if (last){ location.replace(last + '/?invite=DODO2026'); }
-    else{ document.getElementById('msg').textContent='اللابتوب مطفي حاليًا &#128726; — شغّله وانتظر دقيقة ثم حدّث الصفحة'; }
-  })
-  .catch(function(){ document.getElementById('msg').textContent='تعذر الوصول — تحقق من الإنترنت وحدّث الصفحة'; });
-</script></body></html>
+    if(!tunnel)throw 0;
+    document.getElementById('ckmsg').textContent='السيرفر يعمل — جارٍ الدخول لتجربة دودو الكاملة...';
+    return get(tunnel+'/?invite='+INVITE,7000).then(function(){location.replace(tunnel+'/?invite='+INVITE);})
+      .catch(function(){throw 0;});
+  }).catch(function(){
+    document.getElementById('ckmsg').textContent='اللابتوب مطفي — التحول للوضع السحابي...';
+    setTimeout(function(){
+      document.getElementById('checking').hidden=true;
+      document.getElementById('app').hidden=false;
+      document.getElementById('q').focus();
+    },600);
+  });
+}
+
+/* ===== البحث ===== */
+function doSearch(){
+  var q=document.getElementById('q').value.trim();
+  if(!q)return;
+  var R=document.getElementById('results');
+  document.getElementById('detail').hidden=true;R.hidden=false;R.innerHTML='<div class="empty">جارٍ البحث...</div>';
+  Promise.all([
+    jget(CIN+'/catalog/movie/top/search='+encodeURIComponent(q)+'.json').catch(function(){return{metas:[]}}),
+    jget(CIN+'/catalog/series/top/search='+encodeURIComponent(q)+'.json').catch(function(){return{metas:[]}})
+  ]).then(function(a){
+    var metas=(a[0].metas||[]).concat(a[1].metas||[]);
+    if(!metas.length){R.innerHTML='<div class="empty">لا توجد نتائج — جرب اسمًا آخر (بالإنجليزية أفضل)</div>';return;}
+    var h='<div class="grid">';
+    metas.slice(0,40).forEach(function(m){
+      h+='<div class="card" onclick="openMeta(\''+m.type+'\',\''+m.id+'\')">'+
+         '<img src="'+(m.poster||'')+'" loading="lazy" onerror="this.style.visibility=\'hidden\'">'+
+         '<div class="t">'+m.name+'<div class="y">'+(m.releaseInfo||'')+'</div></div></div>';
+    });
+    R.innerHTML=h+'</div>';
+  });
+}
+
+/* ===== التفاصيل ===== */
+function openMeta(type,id){
+  var R=document.getElementById('results'),D=document.getElementById('detail');
+  R.hidden=true;D.hidden=false;D.innerHTML='<div class="empty">جارٍ التحميل...</div>';
+  jget(CIN+'/meta/'+type+'/'+id+'.json').then(function(d){
+    var m=d.meta||{};
+    var h='<div class="bgimg" style="background-image:url('+(m.background||'')+')"></div>'+
+      '<button class="back" onclick="backSearch()">← رجوع</button>'+
+      '<div class="meta"><img src="'+(m.poster||'')+'">'+
+      '<div><h2>'+m.name+'</h2><div style="font-size:12px;color:#94a3b8">'+(m.releaseInfo||'')+' '+(m.runtime||'')+'</div>'+
+      '<div class="desc">'+(m.description||'')+'</div></div></div>';
+    if(type==='movie'){
+      h+='<div style="margin-top:14px"><button class="btn" onclick="loadStreams(\''+type+'\',\''+id+'\')">▶ عرض روابط المشاهدة</button></div>';
+    }else{
+      var seasons={};(m.videos||[]).forEach(function(v){if(v.season>0)seasons[v.season]=1;});
+      var ss=Object.keys(seasons).map(Number).sort(function(a,b){return b-a});
+      h+='<select id="season" onchange="renderEps()">';
+      ss.forEach(function(s){h+='<option value="'+s+'">الموسم '+s+'</option>';});
+      h+='</select><div class="eplist" id="eps"></div>';
+      window._videos=m.videos||[];
+      D.innerHTML=h;renderEps();return;
+    }
+    D.innerHTML=h;
+  });
+}
+function renderEps(){
+  var s=+document.getElementById('season').value;
+  var eps=window._videos.filter(function(v){return v.season===s}).sort(function(a,b){return a.episode-b.episode});
+  var h=eps.map(function(v){
+    return '<div class="ep" onclick="loadStreams(\'series\',\''+v.id+'\')"><b>حلقة '+v.episode+'</b><br><span style="color:#94a3b8">'+(v.name||'').slice(0,40)+'</span></div>';
+  }).join('');
+  document.getElementById('eps').innerHTML=h||'<div class="empty">لا حلقات</div>';
+}
+function backSearch(){document.getElementById('detail').hidden=true;document.getElementById('results').hidden=false;}
+
+/* ===== المصادر ===== */
+function score(s){
+  var t=(s.name||'')+' '+(s.title||'');var sc=0;
+  if(/1080p/i.test(t))sc+=30;else if(/720p/i.test(t))sc+=25;else if(/2160|4k/i.test(t))sc+=4;else if(/480/i.test(t))sc+=10;
+  if(/x264|h\.?264|avc/i.test(t))sc+=20;
+  if(/x265|h\.?265|hevc/i.test(t))sc-=15;
+  var m=(s.title||'').match(/\ud83d\udc64\s*(\d+)/)||0;
+  if(m)sc+=Math.min(25,parseInt(m[1])/8);
+  return sc;
+}
+function loadStreams(type,vid){
+  var D=document.getElementById('detail');
+  var url=type==='movie'?TOR+'/stream/movie/'+vid+'.json':TOR+'/stream/series/'+vid+'.json';
+  D.insertAdjacentHTML('beforeend','<div id="streams"><div class="empty">جارٍ جلب المصادر...</div></div>');
+  jget(url,15000).then(function(d){
+    var st=(d.streams||[]).slice().sort(function(a,b){return score(b)-score(a)});
+    var el=document.getElementById('streams');
+    if(!st.length){el.innerHTML='<div class="empty">لا توجد مصادر لهذا العنوان</div>';return;}
+    var h='<div style="font-size:13px;color:#38bdf8;margin-bottom:8px">روابط المشاهدة ('+st.length+') — مرتبة حسب الأفضل لجودتك</div>';
+    st.slice(0,25).forEach(function(s,i){
+      h+='<div class="stream" onclick="playModal('+i+')">'+
+        '<span class="nm">'+(s.name||'Torrentio').replace(/\n/g,' ')+'</span>'+
+        '<span class="qb">'+((s.name||'').split('\n')[1]||'')+'</span>'+
+        '<div class="ttl">'+(s.title||'')+'</div></div>';
+    });
+    el.innerHTML=h;
+    window._st=st;
+  }).catch(function(){var el=document.getElementById('streams');if(el)el.innerHTML='<div class="empty">تعذر جلب المصادر — أعد المحاولة</div>';});
+}
+
+/* ===== التشغيل السحابي ===== */
+function playModal(i){
+  var s=window._st[i];
+  var trs=[];
+  (s.sources||[]).forEach(function(x){if(x.indexOf('tracker:')===0)trs.push(x.slice(8));});
+  if(!trs.length)trs=DEFTR;
+  var fn=(s.behaviorHints&&s.behaviorHints.filename)||'video';
+  var mag='magnet:?xt=urn:btih:'+s.infoHash+'&dn='+encodeURIComponent(fn)+
+    trs.map(function(t){return '&tr='+encodeURIComponent(t)}).join('');
+  var w1=window.open('https://webtor.io/#/viewer?torrent='+encodeURIComponent(mag),'_blank');
+  var html='<div class="modal" onclick="if(event.target===this)this.remove()" id="pm"><div class="mbox">'+
+    '<h3>▶ تشغيل سحابي</h3>'+
+    '<div style="font-size:12px;color:#94a3b8;direction:ltr;text-align:left;max-height:60px;overflow:hidden">'+fn+'</div>'+
+    '<a class="btn" target="_blank" href="https://webtor.io/#/viewer?torrent='+encodeURIComponent(mag)+'">☁️ المشغّل السحابي WebTor (موصى به)</a>'+
+    '<a class="btn g" target="_blank" href="https://playtor.online/t/'+s.infoHash+'">☁️ المشغّل السحابي PLAYTOR (بديل)</a>'+
+    '<button class="btn g" onclick="copyMag(\''+mag.replace(/'/g,"\\'")+'\')">📋 نسخ رابط الماغنت</button>'+
+    '<button class="btn g" onclick="document.getElementById(\'pm\').remove()">إلغاء</button>'+
+    '<div class="note">المشغّل السحابي يسحب التورنت من السحابة ويبثه لجهازك HTTPS — انتظر ثوانٍ حتى يتوفر seeders كافٍ</div>'+
+    '</div></div>';
+  var old=document.getElementById('pm');if(old)old.remove();
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+function copyMag(m){
+  var t=document.createElement('textarea');t.value=m;document.body.appendChild(t);t.select();
+  try{document.execCommand('copy')}catch(e){}
+  if(navigator.clipboard)navigator.clipboard.writeText(m).catch(function(){});
+  t.remove();
+}
+boot();
+</script>
+</body>
+</html>
