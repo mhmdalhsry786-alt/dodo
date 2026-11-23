@@ -3,293 +3,176 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>دودو</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="دودو ستريم">
-<title>دودو ستريم</title>
+<meta name="apple-mobile-web-app-title" content="دودو">
+<meta name="theme-color" content="#0b1220">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
 <style>
-*{box-sizing:border-box}
-body{font-family:system-ui,"Segoe UI",Tahoma;background:#0f172a;color:#e2e8f0;margin:0;min-height:100vh}
-a{color:#38bdf8}
-header{position:sticky;top:0;z-index:5;background:#1e293bee;backdrop-filter:blur(8px);padding:12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #334155}
-header h1{font-size:17px;color:#38bdf8;margin:0;flex:1}
-.badge{font-size:11px;background:#14532d;color:#4ade80;padding:4px 10px;border-radius:99px}
-#rescan{font-size:12px;background:#334155;color:#e2e8f0;border:0;border-radius:8px;padding:7px 12px;cursor:pointer}
-.center{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;padding:20px}
-.spin{width:34px;height:34px;border:3px solid #334155;border-top-color:#38bdf8;border-radius:50%;animation:sp 0.9s linear infinite;margin-bottom:14px}
-@keyframes sp{to{transform:rotate(360deg)}}
-#searchbar{display:flex;gap:8px;padding:12px 14px;position:sticky;top:53px;background:#0f172a;z-index:4}
-#q{flex:1;background:#1e293b;border:1px solid #334155;color:#e2e8f0;border-radius:10px;padding:12px 14px;font-size:15px;font-family:inherit}
-#q:focus{outline:none;border-color:#38bdf8}
-#searchbar button{background:#2563eb;color:#fff;border:0;border-radius:10px;padding:0 20px;font-size:15px;font-family:inherit;cursor:pointer}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:12px;padding:6px 14px 20px}
-.card{cursor:pointer;border-radius:10px;overflow:hidden;background:#1e293b;transition:transform .15s}
-.card:active{transform:scale(.96)}
-.card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block}
-.card .t{font-size:11.5px;padding:6px 7px;line-height:1.5;min-height:34px}
-.card .y{color:#94a3b8;font-size:10px}
-#detail{padding:14px}
-.bgimg{position:fixed;inset:0;background-size:cover;background-position:center;opacity:.16;filter:blur(2px);pointer-events:none}
-.back{background:#334155;color:#fff;border:0;border-radius:8px;padding:8px 14px;font-size:13px;font-family:inherit;cursor:pointer;margin-bottom:12px;position:relative;z-index:2}
-.meta{display:flex;gap:14px;position:relative;z-index:2}
-.meta img{width:120px;border-radius:10px;flex-shrink:0}
-.meta h2{margin:0 0 4px;font-size:19px}
-.meta .desc{font-size:13px;color:#cbd5e1;line-height:1.8;margin-top:8px;max-height:120px;overflow:auto}
-select{background:#1e293b;border:1px solid #334155;color:#e2e8f0;border-radius:8px;padding:9px 12px;font-size:14px;font-family:inherit;margin:12px 8px 4px 0}
-.eplist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px;position:relative;z-index:2}
-.ep{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:10px;font-size:12.5px;cursor:pointer;line-height:1.6}
-.ep:hover{border-color:#38bdf8}
-#streams{margin-top:14px;position:relative;z-index:2}
-.stream{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:11px 13px;margin-bottom:8px;cursor:pointer}
-.stream:hover{border-color:#2563eb}
-.stream .nm{font-size:13px;font-weight:bold;color:#38bdf8}
-.stream .ttl{font-size:11.5px;color:#94a3b8;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:ltr;text-align:right}
-.qb{display:inline-block;font-size:10px;background:#164e63;color:#67e8f9;border-radius:6px;padding:2px 8px;margin-left:6px}
-.modal{position:fixed;inset:0;background:#0b1220ee;z-index:20;display:flex;align-items:center;justify-content:center;padding:20px}
-.mbox{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:22px;width:100%;max-width:400px}
-.mbox h3{margin:0 0 10px;font-size:16px}
-.btn{display:block;width:100%;background:#2563eb;color:#fff;border:0;border-radius:10px;padding:13px;font-size:14px;font-family:inherit;cursor:pointer;margin-top:9px;text-decoration:none;text-align:center}
-.btn.g{background:#475569}
-.note{font-size:11.5px;color:#94a3b8;line-height:1.9;margin-top:14px;text-align:center}
-#gate input{width:100%;background:#0f172a;border:1px solid #334155;color:#e2e8f0;border-radius:10px;padding:13px;font-size:16px;text-align:center;font-family:inherit}
-.err{color:#fb7185;font-size:13px;margin-top:10px;min-height:18px}
-.empty{padding:40px 20px;text-align:center;color:#94a3b8}
+:root{--bg:#0b1220;--card:#111c31;--line:#1f2f4a;--txt:#e2e8f0;--dim:#94a3b8;--blue:#2563eb;--grn:#6ee7b7;--red:#fca5a5}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:-apple-system,system-ui,"Segoe UI",Tahoma;background:var(--bg);color:var(--txt);
+     padding:calc(env(safe-area-inset-top) + 18px) 18px calc(env(safe-area-inset-bottom) + 18px);min-height:100vh}
+.wrap{max-width:520px;margin:0 auto}
+h1{font-size:22px;margin:0 0 4px;display:flex;align-items:center;gap:8px}
+.dot{width:9px;height:9px;border-radius:50%;background:#f59e0b;box-shadow:0 0 10px currentColor}
+.dot.ok{background:var(--grn)}.dot.bad{background:var(--red)}
+.sub{color:var(--dim);font-size:13px;margin-bottom:16px;line-height:1.7}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(31,47,74,.6);font-size:13px}
+.row:last-child{border-bottom:0}
+.row .nm{flex:1;word-break:break-all;font-family:ui-monospace,monospace;font-size:12px;color:#cbd5e1}
+.badge{font-size:11px;padding:3px 9px;border-radius:999px;white-space:nowrap;font-weight:600}
+.b-wait{background:#3b2f10;color:#fbbf24}
+.b-ok{background:#064e3b;color:var(--grn)}
+.b-bad{background:#4c1d1d;color:var(--red)}
+button{display:block;width:100%;padding:16px;border:0;border-radius:14px;font-size:17px;font-weight:700;margin-top:10px}
+.go{background:var(--blue);color:#fff}
+.go:disabled{opacity:.45}
+.ghost{background:#1e293b;color:#cbd5e1;font-size:15px;padding:13px}
+.msg{font-size:13px;color:#93c5fd;line-height:1.8;margin-top:10px;min-height:20px}
+.foot{font-size:11px;color:#475569;text-align:center;margin-top:16px;line-height:1.8}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
+      border-radius:50%;animation:s .8s linear infinite;vertical-align:-2px;margin-inline-end:6px}
+@keyframes s{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
+<div class="wrap">
+  <h1><span id="dot" class="dot"></span> دودو</h1>
+  <div class="sub">يفحص اللابتوب تلقائيًا كل مرة تفتح فيها التطبيق — لا تحتاج إعدادًا.</div>
 
-<div id="gate" class="modal" hidden>
- <div class="mbox" style="text-align:center">
-  <h3>🎬 دودو ستريم</h3>
-  <p style="font-size:13px;color:#94a3b8">منصة خاصة — أدخل رمز الدعوة</p>
-  <input id="code" type="password" placeholder="رمز الدعوة..." autocomplete="off">
-  <div class="err" id="gerr"></div>
-  <button class="btn" onclick="tryGate()">دخول</button>
- </div>
-</div>
-
-<div id="checking" class="center">
-  <div class="spin"></div>
-  <div id="ckmsg" style="font-size:14px;color:#94a3b8">جارٍ فحص السيرفر...</div>
-</div>
-
-<div id="app" hidden>
-  <header>
-    <h1>🎬 دودو ستريم</h1>
-    <span class="badge" id="mode">وضع سحابي ⛅</span>
-    <button id="rescan" onclick="openHome()">🏠 المنزلي</button>
-  </header>
-  <div id="searchbar">
-    <input id="q" placeholder="ابحث عن فيلم أو مسلسل..." onkeydown="if(event.key==='Enter')doSearch()">
-    <button onclick="doSearch()">بحث</button>
+  <div class="card">
+    <div class="row"><span class="nm">الشبكة المحلية</span><span id="b-lan" class="badge b-wait">…</span></div>
+    <div class="row"><span class="nm">عبر الإنترنت (نفق)</span><span id="b-tun" class="badge b-wait">…</span></div>
+    <div class="row"><span class="nm" id="last-seen">آخر اتصال ناجح: —</span></div>
   </div>
-  <div id="results"></div>
-  <div id="detail" hidden></div>
-  <div class="note">ودودو لايت — النسخة السحابية تعمل بدون لابتوب عبر المشغّلات السحابية<br>التجربة الكاملة (الكرتون المدبلج + الترجمة العربية + الجودة المثلى) عند تشغيل اللابتوب</div>
+
+  <button id="go" class="go" disabled>جارٍ الفحص…</button>
+  <button id="again" class="ghost">إعادة الفحص</button>
+  <div id="msg" class="msg"></div>
+
+  <div class="foot">
+    أضِف هذا التطبيق لشاشة الهاتف الرئيسية مرة واحدة،<br>
+    وبعدها كل فتح = اتصال تلقائي باللابتوب.
+  </div>
 </div>
 
 <script>
-var TOPIC='dodo-f11c4d4c', INVITE='DODO2026';
-var CIN='https://v3-cinemeta.strem.io', TOR='https://torrentio.strem.fun';
-var DEFTR=['udp://tracker.opentrackr.org:1337/announce','udp://open.tracker.cl:1337/announce','udp://tracker.openbittorrent.com:6969/announce','udp://exodus.desync.com:6969/announce'];
+var INVITE='DODO2026';
+var NTFY='https://ntfy.sh/dodo-f11c4d4c/json?poll=1&since=all';
+var CAND=[];
 
-function get(u,ms){
-  var c=new AbortController(); var t=setTimeout(function(){c.abort()},ms||12000);
-  return fetch(u,{signal:c.signal}).then(function(r){clearTimeout(t);return r;});
+function $(id){return document.getElementById(id)}
+function badge(id,state,text){
+  var e=$(id); if(!e)return;
+  e.className='badge '+(state==='ok'?'b-ok':state==='bad'?'b-bad':'b-wait');
+  e.textContent=text;
 }
-function jget(u,ms){return get(u,ms).then(function(r){return r.json()});}
+function setDot(state){var d=$('dot');d.className='dot'+(state==='ok'?' ok':state==='bad'?' bad':'')}
 
-/* ===== بوابة الدعوة ===== */
-function tryGate(){
-  var v=document.getElementById('code').value.trim();
-  if(v===INVITE){localStorage.setItem('dodo_ok','1');document.getElementById('gate').hidden=true;boot();}
-  else{document.getElementById('gerr').textContent='رمز غير صحيح';}
+// فحص الرابط: نجرّب fetch ثم صورة (لتجاوز أي قيود CORS)
+function probe(url,ms){
+  ms=ms||7000;
+  return new Promise(function(resolve){
+    var done=false;
+    function fin(ok){ if(done)return; done=true; resolve(ok); }
+    var t=setTimeout(function(){fin(false)},ms);
+    fetch(url,{mode:'cors',cache:'no-store',signal:(AbortSignal.timeout?AbortSignal.timeout(ms):undefined)})
+      .then(function(r){clearTimeout(t);fin(!!r && (r.ok||r.status===401||r.status===403))})
+      .catch(function(){
+        var img=new Image(); var d2=false;
+        function f(ok){if(d2)return;d2=true;clearTimeout(t);fin(ok)}
+        img.onload=function(){f(true)}; img.onerror=function(){f(false)};
+        img.src=url.split('?')[0].replace(/\/$/,'')+'/favicon.png?_='+Date.now();
+        setTimeout(function(){f(false)},ms);
+      });
+  });
 }
 
-/* ===== الفحص الذكي: لابتوب ثم سحابي ===== */
-function boot(){
-  if(localStorage.getItem('dodo_ok')!=='1'){document.getElementById('gate').hidden=false;return;}
-  var tunnel='', lan='';
-  get('https://ntfy.sh/'+TOPIC+'/json?poll=1&since=all',9000).then(function(r){return r.text()}).then(function(txt){
-    var lines=txt.trim().split(/\n+/);
-    var best={}, bestLan={};
-    for(var i=0;i<lines.length;i++){
-      try{
-        var m=JSON.parse(lines[i]);
-        var msg=m.message||'';
-        var t=m.time||0;
-        var lanm=msg.match(/LAN\s+(http:\/\/[0-9.]+:\d+\/?)/i);
-        var mm=msg.match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/i);
-        if(mm && (!best.url || t>best.t)){best={url:mm[0],t:t};}
-        if(lanm && (!bestLan.url || t>bestLan.t)){bestLan={url:lanm[1],t:t};}
-      }catch(e){}
+// 1) اقرأ آخر رابط نشره اللابتوب على القناة
+function discover(){
+  return fetch(NTFY,{cache:'no-store'})
+    .then(function(r){return r.text()})
+    .then(function(txt){
+      var bestTun={t:0,u:''}, bestLan={t:0,u:''};
+      txt.trim().split(/\n+/).forEach(function(line){
+        try{
+          var m=JSON.parse(line), msg=m.message||'', t=m.time||0;
+          var lan=msg.match(/LAN\s+(http:\/\/[0-9.]+:\d+\/?)/i);
+          var tun=msg.match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/i);
+          if(lan && t>bestLan.t) bestLan={t:t,u:lan[1]};
+          if(tun && t>bestTun.t) bestTun={t:t,u:tun[0]};
+        }catch(e){}
+      });
+      CAND=[];
+      if(bestLan.u) CAND.push({k:'lan', u:bestLan.u.replace(/\/$/,'')+'/?invite='+INVITE});
+      if(bestTun.u) CAND.push({k:'tun', u:bestTun.u+'/?invite='+INVITE});
+      var saved=localStorage.getItem('dodo_last');
+      if(saved && CAND.every(function(c){return c.u!==saved})) CAND.push({k:'saved',u:saved});
+      return CAND;
+    })
+    .catch(function(){
+      CAND=[]; var s=localStorage.getItem('dodo_last');
+      if(s) CAND.push({k:'saved',u:s});
+      return CAND;
+    });
+}
+
+// 2) افحص كل مرشح بالتوازي
+function check(){
+  badge('b-lan','wait','…'); badge('b-tun','wait','…');
+  setDot(''); $('go').disabled=true; $('go').innerHTML='<span class="spin"></span>جارٍ الفحص…';
+  var stored=localStorage.getItem('dodo_last_ok');
+  $('last-seen').textContent='آخر اتصال ناجح: '+(stored?new Date(parseInt(stored)).toLocaleString('ar-EG'):'—');
+
+  return discover().then(function(list){
+    if(!list.length){
+      setDot('bad'); $('go').innerHTML='لا يوجد رابط منشور'; $('msg').textContent='شغّل اللابتوب — سينشر رابطه تلقائيًا خلال دقيقة.';
+      badge('b-lan','bad','—'); badge('b-tun','bad','—'); return;
     }
-    tunnel=best.url||''; lan=bestLan.url||'';
-    // على نفس الشبكة: جرّب العنوان المحلي أولًا (أسرع ولا يحتاج إنترنت)
-    if(lan){
-      var lanFull=lan.replace(/\/$/,'')+'/?invite='+INVITE;
-      window._lan=lanFull;
-    }
-    if(!tunnel && !lan)throw 0;
-    window._tunnel=tunnel;
-    document.getElementById('ckmsg').textContent='السيرفر يعمل — جارٍ الدخول لتجربة دودو الكاملة...';
-    // 1) العنوان المحلي أولًا (نفس الشبكة = أسرع)، 2) ثم النفق، 3) ثم ملاحظة إن فشل الاثنان
-    var tries=[];
-    if(lan)tries.push(lan.replace(/\/$/,'')+'/?invite='+INVITE);
-    if(tunnel)tries.push(tunnel+'/?invite='+INVITE);
-    function nextTry(i){
-      if(i>=tries.length){
-        document.getElementById('ckmsg').textContent='السيرفر يبثّ رابطًا لكن لا يستجيب — قد يكون اللابتوب نائمًا أو الشبكة مختلفة. جرّب من نفس شبكة اللابتوب.';
-        throw 0;
+    var jobs=list.map(function(c){
+      var id = c.k==='lan'?'b-lan':(c.k==='tun'?'b-tun':null);
+      return probe(c.u,7000).then(function(ok){
+        if(id) badge(id,ok?'ok':'bad',ok?'يعمل':'غير متاح');
+        return {c:c, ok:ok};
+      });
+    });
+    return Promise.all(jobs).then(function(results){
+      var working=results.filter(function(r){return r.ok}).map(function(r){return r.c});
+      if(working.length){
+        setDot('ok');
+        $('go').disabled=false;
+        $('go').innerHTML='فتح دودو';
+        $('go').onclick=function(){
+          localStorage.setItem('dodo_last', working[0].u);
+          localStorage.setItem('dodo_last_ok', Date.now());
+          location.replace(working[0].u);
+        };
+        $('msg').textContent=''; 
+        // اتصال تلقائي إن كان هناك رابط يعمل ومرّ أكثر من 3 ثوان
+        setTimeout(function(){ if(!document.hidden) $('go').click(); }, 1200);
+      }else{
+        setDot('bad');
+        $('go').disabled=true;
+        $('go').innerHTML='اللابتوب غير متاح';
+        $('msg').textContent='اللابتوب مغلق أو على شبكة مختلفة. افتحه وسيُكتشف تلقائيًا عند إعادة الفحص.';
       }
-      return get(tries[i],10000).then(function(){location.replace(tries[i]);})
-        .catch(function(){return nextTry(i+1);});
-    }
-    return nextTry(0);
-  }).catch(function(){
-    document.getElementById('ckmsg').textContent='اللابتوب مطفي — التحول للوضع السحابي...';
-    setTimeout(function(){
-      document.getElementById('checking').hidden=true;
-      document.getElementById('app').hidden=false;
-      document.getElementById('q').focus();
-    },600);
-  });
-}
-
-/* ===== البحث ===== */
-function doSearch(){
-  var q=document.getElementById('q').value.trim();
-  if(!q)return;
-  var R=document.getElementById('results');
-  document.getElementById('detail').hidden=true;R.hidden=false;R.innerHTML='<div class="empty">جارٍ البحث...</div>';
-  Promise.all([
-    jget(CIN+'/catalog/movie/top/search='+encodeURIComponent(q)+'.json').catch(function(){return{metas:[]}}),
-    jget(CIN+'/catalog/series/top/search='+encodeURIComponent(q)+'.json').catch(function(){return{metas:[]}})
-  ]).then(function(a){
-    var metas=(a[0].metas||[]).concat(a[1].metas||[]);
-    if(!metas.length){R.innerHTML='<div class="empty">لا توجد نتائج — جرب اسمًا آخر (بالإنجليزية أفضل)</div>';return;}
-    var h='<div class="grid">';
-    metas.slice(0,40).forEach(function(m){
-      h+='<div class="card" onclick="openMeta(\''+m.type+'\',\''+m.id+'\')">'+
-         '<img src="'+(m.poster||'')+'" loading="lazy" onerror="this.style.visibility=\'hidden\'">'+
-         '<div class="t">'+m.name+'<div class="y">'+(m.releaseInfo||'')+'</div></div></div>';
     });
-    R.innerHTML=h+'</div>';
   });
 }
 
-/* ===== التفاصيل ===== */
-function openMeta(type,id){
-  var R=document.getElementById('results'),D=document.getElementById('detail');
-  R.hidden=true;D.hidden=false;D.innerHTML='<div class="empty">جارٍ التحميل...</div>';
-  jget(CIN+'/meta/'+type+'/'+id+'.json').then(function(d){
-    var m=d.meta||{};
-    var h='<div class="bgimg" style="background-image:url('+(m.background||'')+')"></div>'+
-      '<button class="back" onclick="backSearch()">← رجوع</button>'+
-      '<div class="meta"><img src="'+(m.poster||'')+'">'+
-      '<div><h2>'+m.name+'</h2><div style="font-size:12px;color:#94a3b8">'+(m.releaseInfo||'')+' '+(m.runtime||'')+'</div>'+
-      '<div class="desc">'+(m.description||'')+'</div></div></div>';
-    if(type==='movie'){
-      h+='<div style="margin-top:14px"><button class="btn" onclick="loadStreams(\''+type+'\',\''+id+'\')">▶ عرض روابط المشاهدة</button></div>';
-    }else{
-      var seasons={};(m.videos||[]).forEach(function(v){if(v.season>0)seasons[v.season]=1;});
-      var ss=Object.keys(seasons).map(Number).sort(function(a,b){return b-a});
-      h+='<select id="season" onchange="renderEps()">';
-      ss.forEach(function(s){h+='<option value="'+s+'">الموسم '+s+'</option>';});
-      h+='</select><div class="eplist" id="eps"></div>';
-      window._videos=m.videos||[];
-      D.innerHTML=h;renderEps();return;
-    }
-    D.innerHTML=h;
-  });
-}
-function renderEps(){
-  var s=+document.getElementById('season').value;
-  var eps=window._videos.filter(function(v){return v.season===s}).sort(function(a,b){return a.episode-b.episode});
-  var h=eps.map(function(v){
-    return '<div class="ep" onclick="loadStreams(\'series\',\''+v.id+'\')"><b>حلقة '+v.episode+'</b><br><span style="color:#94a3b8">'+(v.name||'').slice(0,40)+'</span></div>';
-  }).join('');
-  document.getElementById('eps').innerHTML=h||'<div class="empty">لا حلقات</div>';
-}
-function backSearch(){document.getElementById('detail').hidden=true;document.getElementById('results').hidden=false;}
+$('again').onclick=function(){$('msg').textContent='جارٍ الفحص…';check()};
 
-function openHome(){
-  var t=window._tunnel;
-  if(t){location.replace(t+'/?invite='+INVITE);}
-  else{location.reload();}
-}
-
-/* ===== المصادر ===== */
-function score(s){
-  var t=(s.name||'')+' '+(s.title||'');var sc=0;
-  if(/1080p/i.test(t))sc+=28;else if(/720p/i.test(t))sc+=26;else if(/2160|4k/i.test(t))sc-=6;else if(/480/i.test(t))sc+=18;
-  if(/x264|h\.?264|avc/i.test(t))sc+=18;
-  if(/x265|h\.?265|hevc/i.test(t))sc-=15;
-  var m=(s.title||'').match(/\ud83d\udc64\s*(\d+)/)||0;
-  if(m)sc+=Math.min(40,parseInt(m[1])/5);
-  var sm=(s.title||'').match(/([\d.]+)\s*(GB|MB)/i);
-  if(sm){
-    var mb=sm[2].toUpperCase()==='GB'?parseFloat(sm[1])*1024:parseFloat(sm[1]);
-    if(mb<=900)sc+=24;else if(mb<=2600)sc+=18;else if(mb<=5200)sc+=2;else sc-=20;
-  }
-  return sc;
-}
-function loadStreams(type,vid){
-  var D=document.getElementById('detail');
-  var url=type==='movie'?TOR+'/stream/movie/'+vid+'.json':TOR+'/stream/series/'+vid+'.json';
-  D.insertAdjacentHTML('beforeend','<div id="streams"><div class="empty">جارٍ جلب المصادر...</div></div>');
-  jget(url,15000).then(function(d){
-    var st=(d.streams||[]).slice().sort(function(a,b){return score(b)-score(a)});
-    var el=document.getElementById('streams');
-    if(!st.length){el.innerHTML='<div class="empty">لا توجد مصادر لهذا العنوان</div>';return;}
-    var bt=(st[0].title||'').match(/([\d.]+)\s*(GB|MB)/i);
-    var h='<button class="btn" onclick="playModal(0)">⚡ شغّل أسرع مصدر تلقائيًا'+(bt?'  📦 '+bt[1]+bt[2]:'')+'</button><div style="height:10px"></div>'+
-      '<div style="font-size:13px;color:#38bdf8;margin-bottom:8px">روابط المشاهدة ('+st.length+') — مرتبة حسب سرعة التشغيل (مشاركون + حجم مناسب)</div>';
-    st.slice(0,25).forEach(function(s,i){
-      var t=(s.title||'');
-      var sm=t.match(/([\d.]+)\s*(GB|MB)/i);var sd=t.match(/\ud83d\udc64\s*(\d+)/);
-      var badge=(sd?'👤 '+sd[1]:'')+(sm?'  📦 '+sm[1]+sm[2]:'');
-      h+='<div class="stream" onclick="playModal('+i+')">'+
-        '<span class="nm">'+(s.name||'Torrentio').replace(/\n/g,' ')+'</span>'+
-        '<span class="qb">'+((s.name||'').split('\n')[1]||'')+'</span>'+
-        (badge?'<span class="qb" style="background:#3f2d0e;color:#fbbf24">'+badge+'</span>':'')+
-        '<div class="ttl">'+t+'</div></div>';
-    });
-    el.innerHTML=h;
-    window._st=st;
-  }).catch(function(){var el=document.getElementById('streams');if(el)el.innerHTML='<div class="empty">تعذر جلب المصادر — أعد المحاولة</div>';});
-}
-
-/* ===== التشغيل السحابي ===== */
-function playModal(i){
-  var s=window._st[i];
-  var trs=[];
-  (s.sources||[]).forEach(function(x){if(x.indexOf('tracker:')===0)trs.push(x.slice(8));});
-  if(!trs.length)trs=DEFTR;
-  var fn=(s.behaviorHints&&s.behaviorHints.filename)||'video';
-  var mag='magnet:?xt=urn:btih:'+s.infoHash+'&dn='+encodeURIComponent(fn)+
-    trs.map(function(t){return '&tr='+encodeURIComponent(t)}).join('');
-  var w1=window.open('https://webtor.io/#/viewer?torrent='+encodeURIComponent(mag),'_blank');
-  var html='<div class="modal" onclick="if(event.target===this)this.remove()" id="pm"><div class="mbox">'+
-    '<h3>▶ تشغيل سحابي</h3>'+
-    '<div style="font-size:12px;color:#94a3b8;direction:ltr;text-align:left;max-height:60px;overflow:hidden">'+fn+'</div>'+
-    '<a class="btn" target="_blank" href="https://webtor.io/#/viewer?torrent='+encodeURIComponent(mag)+'">☁️ المشغّل السحابي WebTor (موصى به)</a>'+
-    '<a class="btn g" target="_blank" href="https://playtor.online/t/'+s.infoHash+'">☁️ المشغّل السحابي PLAYTOR (بديل)</a>'+
-    '<button class="btn g" onclick="copyMag(\''+mag.replace(/'/g,"\\'")+'\')">📋 نسخ رابط الماغنت</button>'+
-    '<button class="btn g" onclick="document.getElementById(\'pm\').remove()">إلغاء</button>'+
-    '<div class="note">خطوات المشغّل السحابي:<br>① سيفتح WebTor ويجهّز الملف — الانتظار 30-90 ثانية طبيعي حسب 👤 و📦<br>② اضغط زر التشغيل ▶ داخل صفحة WebTor<br>③ تأخر أكثر من دقيقتين؟ ارجع واختر مصدرًا 👤 أكثر و📦 أصغر<br>④ للأسرع دائمًا: زر «🏠 المنزلي» بالأعلى (السيرفر المنزلي)</div>'+
-    '</div></div>';
-  var old=document.getElementById('pm');if(old)old.remove();
-  document.body.insertAdjacentHTML('beforeend',html);
-}
-function copyMag(m){
-  var t=document.createElement('textarea');t.value=m;document.body.appendChild(t);t.select();
-  try{document.execCommand('copy')}catch(e){}
-  if(navigator.clipboard)navigator.clipboard.writeText(m).catch(function(){});
-  t.remove();
-}
-boot();
+// كل فتح/عودة للتطبيق = فحص جديد تلقائي
+document.addEventListener('visibilitychange',function(){ if(!document.hidden) check(); });
+window.addEventListener('pageshow',function(){ check(); });
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(function(){}); }
+check();
 </script>
 </body>
 </html>
