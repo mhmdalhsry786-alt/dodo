@@ -35,6 +35,10 @@ button{display:block;width:100%;padding:16px;border:0;border-radius:14px;font-si
 .go:disabled{opacity:.45}
 .ghost{background:#1e293b;color:#cbd5e1;font-size:15px;padding:13px}
 .msg{font-size:13px;color:#93c5fd;line-height:1.8;margin-top:10px;min-height:20px}
+#frame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#0b1220;display:none;z-index:50}
+body.app #frame{display:block}
+body.app .wrap{display:none}
+#bar{position:fixed;top:0;left:0;right:0;height:0;z-index:60;display:none}
 .foot{font-size:11px;color:#475569;text-align:center;margin-top:16px;line-height:1.8}
 .spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
       border-radius:50%;animation:s .8s linear infinite;vertical-align:-2px;margin-inline-end:6px}
@@ -42,6 +46,8 @@ button{display:block;width:100%;padding:16px;border:0;border-radius:14px;font-si
 </style>
 </head>
 <body>
+<iframe id="frame" src="about:blank" allow="fullscreen; autoplay; clipboard-write" referrerpolicy="no-referrer"></iframe>
+<div id="bar"></div>
 <div class="wrap">
   <h1><span id="dot" class="dot"></span> دودو</h1>
   <div class="sub">يفحص اللابتوب تلقائيًا كل مرة تفتح فيها التطبيق — لا تحتاج إعدادًا.</div>
@@ -151,7 +157,7 @@ function check(){
         $('go').onclick=function(){
           localStorage.setItem('dodo_last', working[0].u);
           localStorage.setItem('dodo_last_ok', Date.now());
-          location.replace(working[0].u);
+          openInApp(working[0].u);
         };
         $('msg').textContent=''; 
         // اتصال تلقائي إن كان هناك رابط يعمل ومرّ أكثر من 3 ثوان
@@ -166,11 +172,46 @@ function check(){
   });
 }
 
+// فتح السيرفر داخل نفس التطبيق (بلا قفزة لمتصفح)
+function openInApp(url){
+  var f=$('frame');
+  try{ f.src=url; }catch(e){ location.replace(url); return; }
+  document.body.classList.add('app');
+  history.replaceState({dodo:1}, '', '#app');
+  // مهلة تعافٍ: إن لم يُحمّل شيء خلال 12 ثانية نرجع لشاشة الحالة
+  window._guard=setTimeout(function(){
+    // فحص خفيف: هل الإطار استجاب؟
+    try{
+      var ok=false;
+      try{ ok = !!(f.contentWindow && f.contentWindow.location && f.contentWindow.location.href && f.contentWindow.location.href!=='about:blank'); }catch(e){ ok=true; }
+      if(!ok) backToStatus('تعذر تحميل الواجهة — قد يكون اللابتوب أغلق. الفحص مرة أخرى.');
+    }catch(e){ backToStatus(''); }
+  }, 12000);
+}
+
+function backToStatus(msg){
+  clearTimeout(window._guard);
+  document.body.classList.remove('app');
+  $('frame').src='about:blank';
+  if(msg) $('msg').textContent=msg;
+  history.replaceState({dodo:0}, '', '#status');
+  check();
+}
+
+// زر الرجوع في iOS/المتصفح: من الإطار إلى شاشة الحالة
+window.addEventListener('popstate', function(){
+  if(document.body.classList.contains('app')) backToStatus('');
+});
+
 $('again').onclick=function(){$('msg').textContent='جارٍ الفحص…';check()};
 
 // كل فتح/عودة للتطبيق = فحص جديد تلقائي
-document.addEventListener('visibilitychange',function(){ if(!document.hidden) check(); });
-window.addEventListener('pageshow',function(){ check(); });
+document.addEventListener('visibilitychange',function(){
+  if(!document.hidden && !document.body.classList.contains('app')) check();
+});
+window.addEventListener('pageshow',function(){
+  if(!document.body.classList.contains('app')) check();
+});
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(function(){}); }
 check();
 </script>
