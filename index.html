@@ -177,7 +177,8 @@ function openInApp(url){
   var f=$('frame');
   try{ f.src=url; }catch(e){ location.replace(url); return; }
   document.body.classList.add('app');
-  history.replaceState({dodo:1}, '', '#app');
+  // سجل حقيقي: زر الرجوع يرجعك لشاشة الحالة لا يخرجك من التطبيق
+  try{ history.pushState({dodo:1}, '', '#app'); }catch(e){}
   // مهلة تعافٍ: إن لم يُحمّل شيء خلال 12 ثانية نرجع لشاشة الحالة
   window._guard=setTimeout(function(){
     // فحص خفيف: هل الإطار استجاب؟
@@ -189,18 +190,27 @@ function openInApp(url){
   }, 12000);
 }
 
-function backToStatus(msg){
+function revertUI(msg){
   clearTimeout(window._guard);
   document.body.classList.remove('app');
   $('frame').src='about:blank';
   if(msg) $('msg').textContent=msg;
-  history.replaceState({dodo:0}, '', '#status');
   check();
 }
 
-// زر الرجوع في iOS/المتصفح: من الإطار إلى شاشة الحالة
+function backToStatus(msg){
+  if(location.hash==='#app'){
+    try{ history.back(); }catch(e){ revertUI(msg); }
+    // إن لم يحدث popstate (بعض المتصفحات) نرجع يدويًا بعد لحظة
+    setTimeout(function(){ if(document.body.classList.contains('app')) revertUI(msg); }, 120);
+  } else {
+    revertUI(msg);
+  }
+}
+
+// زر الرجوع في iOS/المتصفح: من الإطار إلى شاشة الحالة (بلا خروج من التطبيق)
 window.addEventListener('popstate', function(){
-  if(document.body.classList.contains('app')) backToStatus('');
+  if(document.body.classList.contains('app')) revertUI('');
 });
 
 $('again').onclick=function(){$('msg').textContent='جارٍ الفحص…';check()};
