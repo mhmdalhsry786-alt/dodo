@@ -1,0 +1,161 @@
+<!doctype html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>دودو</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="دودو">
+<meta name="theme-color" content="#0b1220">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#0b1220;color:#e2e8f0;
+  font-family:-apple-system,system-ui,"Segoe UI",Tahoma;overscroll-behavior:none}
+#splash{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;padding:24px;text-align:center;z-index:10;transition:opacity .35s}
+#splash.hide{opacity:0;pointer-events:none}
+.logo{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#2563eb,#0ea5e9);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px}
+h1{font-size:19px;margin:0}
+#st{font-size:13px;color:#94a3b8;min-height:20px;line-height:1.8}
+.btn{display:inline-block;padding:14px 26px;border:0;border-radius:13px;background:#2563eb;color:#fff;
+  font-size:16px;font-weight:700;margin-top:8px}
+.ghost{background:#1e293b;color:#cbd5e1;font-size:14px;padding:11px 18px}
+#frame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#0b1220;display:none;z-index:5}
+body.live #frame{display:block}
+body.live #splash{display:none}
+#topbar{position:fixed;top:0;left:0;right:0;height:calc(env(safe-area-inset-top) + 0px);z-index:20;display:none}
+.spin{width:26px;height:26px;border:3px solid rgba(255,255,255,.18);border-top-color:#3b82f6;
+  border-radius:50%;animation:s .85s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+.hint{font-size:11px;color:#475569;line-height:1.9;max-width:300px}
+</style>
+</head>
+<body>
+<iframe id="frame" src="about:blank" allow="fullscreen; autoplay; clipboard-write; encrypted-media"
+        referrerpolicy="no-referrer" allowfullscreen></iframe>
+<div id="topbar"></div>
+
+<div id="splash">
+  <div class="logo">د</div>
+  <h1>دودو</h1>
+  <div class="spin" id="sp"></div>
+  <div id="st">جارٍ الاتصال باللابتوب…</div>
+  <button class="btn" id="retry" style="display:none">إعادة المحاولة</button>
+  <button class="btn ghost" id="ext" style="display:none">فتح في المتصفح</button>
+  <div class="hint" id="hint"></div>
+</div>
+
+<script>
+var INVITE='DODO2026';
+var NTFY='https://ntfy.sh/dodo-f11c4d4c/json?poll=1&since=all';
+var URLS=[], TRIES=0;
+
+function $(i){return document.getElementById(i)}
+function say(t){$('st').textContent=t}
+function busy(b){$('sp').style.display=b?'block':'none'}
+
+/* ---------- الاكتشاف: اقرأ آخر رابط نشره اللابتوب ---------- */
+function discover(){
+  return fetch(NTFY,{cache:'no-store'})
+    .then(function(r){return r.text()})
+    .then(function(txt){
+      var tun={t:0,u:''}, lan={t:0,u:''};
+      txt.trim().split(/\n+/).forEach(function(l){
+        try{
+          var m=JSON.parse(l), msg=m.message||'', t=m.time||0;
+          var a=msg.match(/LAN\s+(http:\/\/[0-9.]+:\d+\/?)/i);
+          var b=msg.match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/i);
+          if(a&&t>lan.t) lan={t:t,u:a[1]};
+          if(b&&t>tun.t) tun={t:t,u:b[0]};
+        }catch(e){}
+      });
+      var out=[];
+      var https=(location.protocol==='https:');
+      if(tun.u) out.push(tun.u+'/?invite='+INVITE);
+      if(lan.u) out.push({lan:lan.u.replace(/\/$/,'')+'/?invite='+INVITE, blocked:https});
+      var saved=localStorage.getItem('dodo_ok');
+      if(saved && out.indexOf(saved)<0) out.push(saved);
+      return out;
+    })
+    .catch(function(){
+      var s=localStorage.getItem('dodo_ok');
+      return s?[s]:[];
+    });
+}
+
+/* ---------- الفحص: طلب حقيقي مع كشف الاستجابة ---------- */
+function alive(url,ms){
+  ms=ms||8000;
+  return new Promise(function(res){
+    var done=false;
+    function fin(ok){ if(done)return; done=true; res(ok); }
+    var ac = window.AbortController ? new AbortController() : null;
+    var t=setTimeout(function(){ if(ac) try{ac.abort()}catch(e){}; fin(false); },ms);
+    fetch(url,{mode:'cors',cache:'no-store',signal:ac?ac.signal:undefined})
+      .then(function(r){ clearTimeout(t); fin(r.ok||r.status===401||r.status===403||r.status===200); })
+      .catch(function(){ clearTimeout(t); fin(false); });
+  });
+}
+
+/* ---------- التشغيل ---------- */
+function start(){
+  busy(true); $('retry').style.display='none'; $('ext').style.display='none'; $('hint').textContent='';
+  say('جارٍ الاتصال باللابتوب…');
+
+  discover().then(function(list){
+    if(!list.length){
+      busy(false); say('لم أجد اللابتوب');
+      $('retry').style.display='inline-block';
+      $('hint').textContent='شغّل اللابتوب — سينشر رابطه تلقائيًا خلال دقيقة، ثم اضغط إعادة المحاولة.';
+      return;
+    }
+    var https=(location.protocol==='https:');
+    var cands=list.filter(function(u){ return !(u&&u.blocked); });
+    var lanOnly=list.filter(function(u){ return u&&u.blocked; }).map(function(u){return u.lan});
+
+    say('جارٍ فحص '+cands.length+' عنوان…');
+    Promise.all(cands.map(function(u){ return alive(u,8000).then(function(ok){return {u:u,ok:ok}}) }))
+      .then(function(rs){
+        var good=rs.filter(function(r){return r.ok}).map(function(r){return r.u});
+        if(good.length){ open(good[0]); return; }
+        // لا شيء يعمل → جرّب المحلي كخيار خارجي
+        busy(false);
+        say('اللابتوب غير متاح الآن');
+        $('retry').style.display='inline-block';
+        if(lanOnly.length){
+          $('ext').style.display='inline-block';
+          $('ext').onclick=function(){ location.href=lanOnly[0] };
+          $('hint').textContent='إن كنت على نفس شبكة اللابتوب، زر «فتح في المتصفح» سيعمل (يحتاج فتحًا خارجيًا بسبب قيود https).';
+        }else{
+          $('hint').textContent='افتح اللابتوب أو تأكد أنه على الإنترنت ثم أعد المحاولة.';
+        }
+      });
+  });
+}
+
+function open(url){
+  localStorage.setItem('dodo_ok', url);
+  document.body.classList.add('live');
+  var f=$('frame');
+  f.onload=function(){ /* حمّل */ };
+  f.src=url;
+  say('');
+}
+
+$('retry').onclick=function(){ TRIES++; start(); };
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden) return;
+  if(document.body.classList.contains('live')) return;   // التطبيق مفتوح — لا ت interference
+  start();
+});
+window.addEventListener('pageshow',function(){ if(!document.body.classList.contains('live')) start(); });
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(function(){}); }
+start();
+</script>
+</body>
+</html>
