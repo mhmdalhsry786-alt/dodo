@@ -25,8 +25,6 @@ h1{font-size:19px;margin:0}
 .btn{display:inline-block;padding:14px 26px;border:0;border-radius:13px;background:#2563eb;color:#fff;
   font-size:16px;font-weight:700;margin-top:8px}
 .ghost{background:#1e293b;color:#cbd5e1;font-size:14px;padding:11px 18px}
-#frame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#0b1220;display:none;z-index:5}
-body.live #frame{display:block}
 body.live #splash{display:none}
 #topbar{position:fixed;top:0;left:0;right:0;height:calc(env(safe-area-inset-top) + 0px);z-index:20;display:none}
 .spin{width:26px;height:26px;border:3px solid rgba(255,255,255,.18);border-top-color:#3b82f6;
@@ -36,9 +34,6 @@ body.live #splash{display:none}
 </style>
 </head>
 <body>
-<iframe id="frame" src="about:blank" allow="fullscreen; autoplay; clipboard-write; encrypted-media"
-        referrerpolicy="no-referrer" allowfullscreen></iframe>
-<div id="topbar"></div>
 
 <div id="splash">
   <div class="logo">د</div>
@@ -140,11 +135,10 @@ function start(){
 
 function open(url){
   localStorage.setItem('dodo_ok', url);
-  document.body.classList.add('live');
-  var f=$('frame');
-  f.onload=function(){ /* حمّل */ };
-  f.src=url;
-  say('');
+  localStorage.setItem('dodo_ts', Date.now());
+  busy(true); say('تم الاتصال — جارٍ الفتح…');
+  // انتقال مباشر: الطريقة الوحيدة التي تُظهر الواجهة كاملة (129 عنصرًا مقابل 1 داخل الإطار)
+  location.replace(url);
 }
 
 $('retry').onclick=function(){ TRIES++; start(); };
