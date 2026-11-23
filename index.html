@@ -195,6 +195,7 @@ function revertUI(msg){
   document.body.classList.remove('app');
   $('frame').src='about:blank';
   if(msg) $('msg').textContent=msg;
+  try{ if(location.hash) history.replaceState({dodo:0}, '', location.pathname+location.search); }catch(e){}
   check();
 }
 
