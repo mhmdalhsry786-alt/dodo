@@ -110,17 +110,43 @@ function tryGate(){
 /* ===== الفحص الذكي: لابتوب ثم سحابي ===== */
 function boot(){
   if(localStorage.getItem('dodo_ok')!=='1'){document.getElementById('gate').hidden=false;return;}
-  var tunnel='';
-  get('https://ntfy.sh/'+TOPIC+'/json?poll=1',8000).then(function(r){return r.text()}).then(function(txt){
+  var tunnel='', lan='';
+  get('https://ntfy.sh/'+TOPIC+'/json?poll=1&since=all',9000).then(function(r){return r.text()}).then(function(txt){
     var lines=txt.trim().split(/\n+/);
+    var best={}, bestLan={};
     for(var i=0;i<lines.length;i++){
-      try{var m=JSON.parse(lines[i]);var mm=(m.message||'').match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/i);if(mm)tunnel=mm[0];}catch(e){}
+      try{
+        var m=JSON.parse(lines[i]);
+        var msg=m.message||'';
+        var t=m.time||0;
+        var lanm=msg.match(/LAN\s+(http:\/\/[0-9.]+:\d+\/?)/i);
+        var mm=msg.match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/i);
+        if(mm && (!best.url || t>best.t)){best={url:mm[0],t:t};}
+        if(lanm && (!bestLan.url || t>bestLan.t)){bestLan={url:lanm[1],t:t};}
+      }catch(e){}
     }
-    if(!tunnel)throw 0;
+    tunnel=best.url||''; lan=bestLan.url||'';
+    // على نفس الشبكة: جرّب العنوان المحلي أولًا (أسرع ولا يحتاج إنترنت)
+    if(lan){
+      var lanFull=lan.replace(/\/$/,'')+'/?invite='+INVITE;
+      window._lan=lanFull;
+    }
+    if(!tunnel && !lan)throw 0;
     window._tunnel=tunnel;
     document.getElementById('ckmsg').textContent='السيرفر يعمل — جارٍ الدخول لتجربة دودو الكاملة...';
-    return get(tunnel+'/?invite='+INVITE,10000).then(function(){location.replace(tunnel+'/?invite='+INVITE);})
-      .catch(function(){throw 0;});
+    // 1) العنوان المحلي أولًا (نفس الشبكة = أسرع)، 2) ثم النفق، 3) ثم ملاحظة إن فشل الاثنان
+    var tries=[];
+    if(lan)tries.push(lan.replace(/\/$/,'')+'/?invite='+INVITE);
+    if(tunnel)tries.push(tunnel+'/?invite='+INVITE);
+    function nextTry(i){
+      if(i>=tries.length){
+        document.getElementById('ckmsg').textContent='السيرفر يبثّ رابطًا لكن لا يستجيب — قد يكون اللابتوب نائمًا أو الشبكة مختلفة. جرّب من نفس شبكة اللابتوب.';
+        throw 0;
+      }
+      return get(tries[i],10000).then(function(){location.replace(tries[i]);})
+        .catch(function(){return nextTry(i+1);});
+    }
+    return nextTry(0);
   }).catch(function(){
     document.getElementById('ckmsg').textContent='اللابتوب مطفي — التحول للوضع السحابي...';
     setTimeout(function(){
