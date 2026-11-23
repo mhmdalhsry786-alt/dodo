@@ -1,0 +1,248 @@
+<!doctype html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>أدوات آيفون</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="أدوات آيفون">
+<meta name="theme-color" content="#0b1220">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{--bg:#0a0f1c;--card:#111a2e;--card2:#0e1626;--line:#1e2b45;--txt:#e6edf7;--dim:#8aa0bf;
+--blue:#3b82f6;--grn:#34d399;--amb:#fbbf24;--red:#f87171}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,system-ui,"Segoe UI",Tahoma;
+padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 76px);min-height:100vh}
+.wrap{max-width:560px;margin:0 auto}
+header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#06b6d4);
+display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800}
+h1{font-size:17px;margin:0}h1 small{display:block;font-size:11px;color:var(--dim);font-weight:400;margin-top:2px}
+.search{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--line);
+border-radius:12px;padding:11px 13px;margin-bottom:14px}
+.search input{flex:1;background:0;border:0;outline:0;color:var(--txt);font-size:16px}
+
+.search input::placeholder{color:#5b708f}
+h2{font-size:13px;color:var(--dim);margin:18px 0 9px;font-weight:600;letter-spacing:.3px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:9px;
+display:flex;gap:11px;align-items:flex-start;text-decoration:none;color:inherit}
+.card:active{transform:scale(.993);background:#14203a}
+.ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+font-size:19px;flex-shrink:0;background:#1b2740}
+.body{flex:1;min-width:0}
+.t{font-size:14.5px;font-weight:650;margin-bottom:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.d{font-size:12px;color:var(--dim);line-height:1.65}
+.pill{font-size:10px;padding:2px 7px;border-radius:999px;font-weight:600}
+.p-ok{background:#0c3b2e;color:var(--grn)}.p-mid{background:#3b2f0f;color:var(--amb)}
+.p-no{background:#3d1418;color:var(--red)}.p-a{background:#12294a;color:#7dd3fc}
+.honest{background:#1a1520;border:1px solid #3a2a3f;border-radius:14px;padding:13px;margin:14px 0}
+.honest .t{color:#f0abfc;font-size:13.5px}
+.honest ul{margin:8px 0 0;padding-inline-start:18px;font-size:12px;color:#c9b8d4;line-height:1.9}
+.tabs{position:fixed;bottom:0;left:0;right:0;display:flex;background:rgba(10,15,28,.96);
+backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:9}
+.tab{flex:1;padding:10px 4px 8px;text-align:center;font-size:10.5px;color:#64748b;background:0;border:0;
+font-family:inherit;cursor:pointer}
+.tab .ic{font-size:19px;display:block;margin-bottom:2px;line-height:1}
+.tab.on{color:var(--blue)}
+.pane{display:none}.pane.on{display:block}
+.steps{font-size:12.5px;color:#b9c8de;line-height:2;margin:0;padding-inline-start:18px}
+.btn{display:block;text-align:center;padding:12px;border-radius:11px;background:var(--blue);color:#fff;
+font-size:14px;font-weight:650;text-decoration:none;margin-top:9px}
+.btn.alt{background:#1e293b;color:#cbd5e1}
+.note{font-size:11px;color:#5b708f;margin-top:9px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">⚙</div>
+    <h1>أدوات آيفون <small>متجر + إزالة إعلانات + صيانة</small></h1>
+  </header>
+
+  <div class="search">
+    <span style="color:#5b708f">🔍</span>
+    <input id="q" placeholder="ابحث عن أداة…" autocomplete="off">
+  </div>
+
+  <!-- ─────────── التطبيقات ─────────── -->
+  <div class="pane on" id="p-apps">
+    <h2>متجر التطبيقات (تثبيت من Safari)</h2>
+
+    <a class="card" href="https://altstore.io" target="_blank" rel="noopener">
+      <div class="ico">🏪</div><div class="body">
+        <div class="t">AltStore <span class="pill p-mid">يحتاج حاسبًا مرة</span></div>
+        <div class="d">أشهر متجر بديل على iOS. يثبّت ملفات IPA ويجددها تلقائيًا. يحتاج AltServer على الكمبيوتر للبداية.</div>
+      </div></a>
+
+    <a class="card" href="https://sidestore.io" target="_blank" rel="noopener">
+      <div class="ico">📦</div><div class="body">
+        <div class="t">SideStore <span class="pill p-a">تحديث ذاتي</span></div>
+        <div class="d">فرع من AltStore يعمل بلا كمبيوتر بعد الإعداد الأول (Wireless). أفضل خيار لتثبيت IPA على آيفون حديث.</div>
+      </div></a>
+
+    <a class="card" href="https://stikdebug.org/" target="_blank" rel="noopener">
+      <div class="ico">🐞</div><div class="body">
+        <div class="t">StikDebug <span class="pill p-a">JIT + تصحيح</span></div>
+        <div class="d">يفعّل JIT وdebugger على الجهاز نفسه — أقرب شيء لصلاحيات متقدمة على iOS 17.4 وأحدث.</div>
+      </div></a>
+
+    <a class="card" href="https://github.com/Claration/Feather" target="_blank" rel="noopener">
+      <div class="ico">🪶</div><div class="body">
+        <div class="t">Feather <span class="pill p-mid">يحتاج شهادة</span></div>
+        <div class="d">مثبّت IPA مفتوح المصدر. يقبل شهادة مطوّر أو شهادة Enterprise.</div>
+      </div></a>
+
+    <a class="card" href="https://apps.apple.com/app/id1047223162" target="_blank" rel="noopener">
+      <div class="ico">🛡</div><div class="body">
+        <div class="t">AdGuard (App Store) <span class="pill p-ok">مجاني</span></div>
+        <div class="d">حاجب إعلانات Safari الأقوى. يعمل بلا جيلبريك ولا توقيع.</div>
+      </div></a>
+
+    <a class="card" href="https://apps.apple.com/app/id1375304871" target="_blank" rel="noopener">
+      <div class="ico">🚫</div><div class="body">
+        <div class="t">1Blocker <span class="pill p-ok">مجاني</span></div>
+        <div class="d">حاجب إعلانات وتتبّع داخل Safari، خفيف وسريع.</div>
+      </div></a>
+
+    <a class="card" href="https://a-shell.netlify.app" target="_blank" rel="noopener">
+      <div class="ico">⌨️</div><div class="body">
+        <div class="t">a-Shell <span class="pill p-ok">طرفية حقيقية</span></div>
+        <div class="d">أوامر يونكس كاملة على الآيفون (curl, python, ssh) — بديل جزئي لـ«shell» في شيزوكو.</div>
+      </div></a>
+
+    <a class="card" href="shortcuts://" >
+      <div class="ico">⌘</div><div class="body">
+        <div class="t">Shortcuts <span class="pill p-ok">مدمج</span></div>
+        <div class="d">أتمتة النقر والفتح والتبديل — بديل وظيفي لـTapTap وSam Helper.</div>
+      </div></a>
+  </div>
+
+  <!-- ─────────── إزالة الإعلانات ─────────── -->
+  <div class="pane" id="p-ads">
+    <h2>إزالة الإعلانات — على مستوى النظام</h2>
+
+    <a class="card" href="https://adguard-dns.io/en/public-dns.html" target="_blank" rel="noopener">
+      <div class="ico">🌐</div><div class="body">
+        <div class="t">AdGuard DNS <span class="pill p-ok">يعمل فورًا</span></div>
+        <div class="d">يحجب الإعلانات داخل التطبيقات كلها + Safari عبر ملف DNS يُثبَّت من Safari.</div>
+      </div></a>
+
+    <a class="card" href="https://nextdns.io" target="_blank" rel="noopener">
+      <div class="ico">🧭</div><div class="body">
+        <div class="t">NextDNS <span class="pill p-a">قابل للضبط</span></div>
+        <div class="d">حاجب إعلانات وبرمجيات خبيثة مع تحكم كامل بالفلترة وتقارير. مجاني حتى 300 ألف استعلام شهريًا.</div>
+      </div></a>
+
+    <div class="card" style="align-items:flex-start">
+      <div class="ico">📋</div><div class="body">
+        <div class="t">الخطوات (من Safari مباشرة)</div>
+        <ol class="steps">
+          <li>افتح الرابط أعلاه في <b>Safari</b></li>
+          <li>اختر <b>iOS → Download profile</b></li>
+          <li>الإعدادات ← <b>General → VPN &amp; Device Management</b></li>
+          <li>اضغط الملف ← <b>Install</b> ← اكتب رمز الهاتف</li>
+          <li>الإعدادات ← <b>Wi‑Fi/البيانات</b> ← DNS ← فعّل الملف</li>
+        </ol>
+        <div class="note">هذا يحجب الإعلانات في <b>كل</b> التطبيقات — بدون جيلبريك ولا توقيع.</div>
+      </div>
+    </div>
+
+    <div class="honest">
+      <div class="t">⚠️ ما لا يمكن تحقيقه</div>
+      <ul>
+        <li>الإعلانات داخل تطبيقات تستخدم خوادم مشفّرة (بهوية نفس الخادم) لا يُحجبها DNS — تحتاج لصقًّا بمستوى النظام (جيلبريك).</li>
+        <li>لا يوجد على iOS ما يعادل «LSPatch» لتعديل التطبيقات — آبل تمنع تعديل الأكواد الموقّعة.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─────────── الأداء ─────────── -->
+  <div class="pane" id="p-perf">
+    <h2>الأداء — ما يعمل فعلًا على آيفون</h2>
+
+    <div class="card" style="align-items:flex-start">
+      <div class="ico">🎯</div><div class="body">
+        <div class="t">قبل أي شيء: القياس</div>
+        <div class="d">لا فائدة من «زيادة الفريمات» بلا قياس. افتح اللعبة/التطبيق وسجّل:
+          عدد الفريمات الحالي، حرارة الجهاز، ونسبة استهلاك البطارية.</div>
+      </div></div>
+
+    <div class="card" style="align-items:flex-start">
+      <div class="ico">⚡</div><div class="body">
+        <div class="t">1. أوقف «تحديث التطبيقات في الخلفية»</div>
+        <div class="d">الإعدادات ← عام ← تحديث التطبيقات في الخلفية ← <b>إيقاف</b>.
+          يحرّر ذاكرةً وحدة معالجة ويقلّل throttle الحراري.</div>
+      </div></div>
+
+    <div class="card" style="align-items:flex-start">
+      <div class="ico">🎨</div><div class="body">
+        <div class="t">2. قلّل الشفافية والحركة</div>
+        <div class="d">الإعدادات ← إمكانية الوصول ← الحركة ← <b>تقليل الحركة</b> ← تشغيل،
+          ثم العرض ← <b>تقليل الشفافية</b> ← تشغيل.</div>
+      </div></div>
+
+    <div class="card" style="align-items:flex-start">
+      <div class="ico">🔋</div><div class="body">
+        <div class="t">3. أوقف «وضع الطاقة المنخفضة» أثناء اللعب</div>
+        <div class="d">الطاقة المنخفضة تُخفّض معدّل الإطارات في الألعاب. أوقفه مؤقتًا واشحن الجهاز.</div>
+      </div></div>
+
+    <div class="card" style="align-items:flex-start">
+      <div class="ico">💾</div><div class="body">
+        <div class="t">4. فرّغ مساحة</div>
+        <div class="d">أقل من 10% مساحة حرّة → كتابة ذاكرة أبطأ → تقطيع.
+          الإعدادات ← عام ← مساحة الآيفون.</div>
+      </div></div>
+
+    <div class="card" style="align-items:flex-start">
+      <div class="ico">🌡</div><div class="body">
+        <div class="t">5. امنع الحرارة</div>
+        <div class="d">أهم عامل لثبات الفريمات: انزع الغطاء، لا تلعب أثناء الشحن، وتجنّب الشمس المباشرة.</div>
+      </div></div>
+
+    <div class="honest">
+      <div class="t">🛑 الحقيقة عن «رفع الفريمات»</div>
+      <ul>
+        <li>iOS <b>لا يسمح</b> لأي تطبيق عادي بالوصول للـGPU أو تغيير معدّل الإطارات.</li>
+        <li>كل تطبيقات «FPS Booster» على App Store إمّا وهمية أو مجرد تنظيف ذاكرة.</li>
+        <li>رفع الفريمات الحقيقي يحتاج <b>جيلبريك + تعديل kernel</b> — غير متاح ولا آمن.</li>
+        <li><b>ما يعمل فعلًا:</b> النقاط الخمس أعلاه (تأثير مقيس، بلا مخاطرة).</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<nav class="tabs">
+  <button class="tab on" data-p="apps"><span class="ic">🏪</span>المتجر</button>
+  <button class="tab" data-p="ads"><span class="ic">🚫</span>الإعلانات</button>
+  <button class="tab" data-p="perf"><span class="ic">⚡</span>الأداء</button>
+</nav>
+
+<script>
+var tabs=[].slice.call(document.querySelectorAll('.tab'));
+function show(p){
+  document.querySelectorAll('.pane').forEach(function(e){e.classList.remove('on')});
+  document.getElementById('p-'+p).classList.add('on');
+  tabs.forEach(function(t){t.classList.toggle('on', t.dataset.p===p)});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+tabs.forEach(function(t){t.onclick=function(){show(t.dataset.p)}});
+
+// البحث: يفلتر البطاقات في كل التبويبات
+var q=document.getElementById('q');
+q.addEventListener('input', function(){
+  var v=q.value.trim().toLowerCase();
+  document.querySelectorAll('.card').forEach(function(c){
+    var txt=(c.innerText||'').toLowerCase();
+    c.style.display = (!v || txt.indexOf(v)>=0) ? '' : 'none';
+  });
+});
+
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(function(){}); }
+</script>
+</body>
+</html>
